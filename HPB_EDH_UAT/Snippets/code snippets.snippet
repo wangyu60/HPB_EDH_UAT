@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<CodeSnippets xmlns="http://schemas.microsoft.com/VisualStudio/2005/CodeSnippet">
+  <CodeSnippet Format="1.0.0">
+    <Header>
+      <Title>EDH Unit Test</Title>
+      <Shortcut>edhuat</Shortcut>
+      <Description>Code snippet to generate the EDH webservice UAT test cases</Description>
+      <Author>Wang Yu</Author>
+    </Header>
+    <Snippet>
+      <Declarations>
+        <!--<Literal>
+          <ID>number</ID>
+          <Default>001</Default>
+          <ToolTip>Test Case Number</ToolTip>
+        </Literal>-->
+      <Literal>
+          <ID>data_type_one</ID>
+          <Default>dataTypeOne</Default>
+          <ToolTip>Type of Test data 1</ToolTip>
+        </Literal>
+        <Literal>
+          <ID>data_one</ID>
+          <Default>dataOne</Default>
+          <ToolTip>Test data 1</ToolTip>
+        </Literal>
+       <Literal>
+          <ID>data_type_two</ID>
+          <Default>dataTypeTwo</Default>
+          <ToolTip>Type of Test data 2</ToolTip>
+        </Literal>
+        <Literal>
+          <ID>data_two</ID>
+          <Default>dataTwo</Default>
+          <ToolTip>Test data 2</ToolTip>
+        </Literal>
+      </Declarations>
+      <Code Language="csharp">
+        <![CDATA[queryParam = new ApiList
+            {
+                { "$data_type_one$", "$data_one$" },
+                { "$data_type_two$", "$data_two$"}
+            };
+            queryString = queryParam.ToQueryString();
+
+            runTest(++idx, queryString);
+			
+			]]>
+      </Code>
+    </Snippet>
+  </CodeSnippet>
+</CodeSnippets>
