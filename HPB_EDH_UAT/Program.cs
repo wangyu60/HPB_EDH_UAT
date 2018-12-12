@@ -100,7 +100,7 @@ namespace HPB_EDH_UAT
 
                         //test case up to 50 is GET entities test
                         //test case 51 to 61 is GET entity by UEN test
-                        //test case id 62 and above is GET entity by UEN and appointment test 
+                        //test case id 62 and above is GET entity by UEN and appointments test 
 
                         if (Id < 51)
                             testCase.TestMethod = TestMethod.Entities;
@@ -124,10 +124,7 @@ namespace HPB_EDH_UAT
                         if (rawData[1] != "uen") // no such case in the data, but just in case
                             testCases[Id].AddQueryParam(rawData[1], rawData[2]);
                     }
-
-
-                }
-                
+                }               
 
             }
 
@@ -136,8 +133,6 @@ namespace HPB_EDH_UAT
             
         private static void runTest(TestCase testCase)
         {
-            //var testCaseId = $"DT{testCaseIndex.ToString().PadLeft(3, '0')}";
-
             var queryParam = new ApiList();
             foreach (var param in testCase.QueryParams)
             {
@@ -148,7 +143,6 @@ namespace HPB_EDH_UAT
             LoggerManager.Logger.LogInformation($"Test Case {testCase.Name} started. Query string: {queryString}");
             Console.WriteLine($"Test Case {testCase.Name} started.");
 
-            //TODO: change to 3 cases of GET by entities; by UEN and by UEN appointments.
             // base URL
             string baseUrl;
             //static string apiPath = "test/l2-eg/v1"; //according to "EDH_BIDWH_HPB_UAT_REST_Scenarios_Conditions_v1.0.xlsx", tab "WebService"
