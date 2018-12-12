@@ -29,8 +29,8 @@ namespace HPB_EDH_UAT
 
         // private cert file and password
         static string privateCertName = GetLocalPath("Certificates/healthier-choice_hpb_gov_sg.pfx");
-        static string password = "Auror@2810";
-        static RSACryptoServiceProvider privateKey = ApiAuthorization.PrivateKeyFromP12(privateCertName, password); // should also use embedded resource.
+        
+        static RSACryptoServiceProvider privateKey = ApiAuthorization.PrivateKeyFromP12(privateCertName, Constants.certPassword); // should also use embedded resource.
 
         // no need append .e on the target gateway name (for Intranet i.e <tenant>-pvt.api.gov.sg)
         static string targetGatewayName = "edh.api.gov.sg";
