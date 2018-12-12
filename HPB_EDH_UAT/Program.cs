@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace HPB_EDH_UAT
 {
-    class Program
+    partial class Program
     {
         // application realm
         static string realm = "http://apex_l2_eg"; //according to "EDH - APEX (Internet) REST L2 to L2-EG Guide_v1.2.docx", 2.1
@@ -25,7 +25,11 @@ namespace HPB_EDH_UAT
         // api signing gateway name and path (for Intranet i.e <tenant>-pvt.i.api.gov.sg)
         static string signingGateway = "edh.e.api.gov.sg"; //accoridng to "EDH - APEX (Internet) REST L2 to L2-EG Guide_v1.2.docx" section 4.1, should replace edh.api with edh.e.api
 
-        static string apiPath = "test/l2-eg/v1/entities"; //according to "EDH_BIDWH_HPB_UAT_REST_Scenarios_Conditions_v1.0.xlsx", tab "WebService"
+        static string apiPath = "test/l2-eg/v1"; //according to "EDH_BIDWH_HPB_UAT_REST_Scenarios_Conditions_v1.0.xlsx", tab "WebService"
+        //v1/entities
+        //v1/entity/{uen}
+        //v1/entity/{uen}/appointments
+        
 
         // private cert file and password
         static string privateCertName = GetLocalPath("Certificates/healthier-choice_hpb_gov_sg.pfx");
@@ -36,41 +40,14 @@ namespace HPB_EDH_UAT
         static string targetGatewayName = "edh.api.gov.sg";
 
         public static string testScenarioFileName = "EDH_BIDWH_HPB_UAT_REST_Scenarios_Conditions_v1.0.xlsx";
-        public enum TestMethod
-        {
-            Entities,           //GET  /entities
-            UENs,               //GET  /entity/{UEN}  
-            Appointments        //GET  /entity/{UEN}/appointment
-        }
-
-        public class TestCase
-        {
-            public int Id { get; set; }
-            public string Name { get; set; }
-            public TestMethod TestMethod { get; set; }
-
-            public string UEN { get; set; }
-
-            public Dictionary<string, string> QueryParams { get; set; } = new Dictionary<string, string>();
-
-            public void AddQueryParam(string ParamName, string ParamVal) //can also overload Dictionary.Add
-            {
-                if (!QueryParams.ContainsKey(ParamName))
-                {
-                    QueryParams.Add(ParamName, ParamVal);
-                }
-                else
-                {
-                    QueryParams[ParamName] += $",{ParamVal}";
-                }
-            }
-        }
 
 
         static void Main(string[] args)
         {
             LoggerManager.Logger = new FileLogger(LogLevel.Debug);
-            //Old();
+            
+            //var testCase_DT051 = new TestCase { Id=10000, Name="DT051", TestMethod = TestMethod.UENs, UEN= "198102460H" };
+            //runTest(testCase_DT051);
 
             var testCases = ExtractTestCases();
 
@@ -116,6 +93,11 @@ namespace HPB_EDH_UAT
                         //create new test case and add it to the dict
 
                         var testCase = new TestCase { Name = name, Id = Id };
+
+                        if(!string.IsNullOrEmpty(rawData[1]) && !string.IsNullOrEmpty(rawData[2]) 
+                            && rawData[1]!="uen") //"uen" is not a parameter
+                            testCase.AddQueryParam(rawData[1], rawData[2]);
+
                         //test case up to 50 is GET entities test
                         //test case 51 to 61 is GET entity by UEN test
                         //test case id 62 and above is GET entity by UEN and appointment test 
@@ -151,111 +133,7 @@ namespace HPB_EDH_UAT
 
             return testCases;
         }
-
-        //private static void Old()
-        //{
-        //    int idx = 0;
-
-        //    runTest(++idx, null); //DT001
-
-
-        //    var queryParam = new ApiList
-        //    {
-        //        { "issuance_agencies", "MOM" }
-        //    };
-        //    string queryString = queryParam.ToQueryString();
-
-        //    runTest(++idx, queryString);
-
-
-        //    queryParam = new ApiList
-        //    {
-        //        { "issuance_agencies", "MOM,MCCY" }
-        //    };
-        //    queryString = queryParam.ToQueryString();
-
-        //    runTest(++idx, queryString);
-
-
-        //    queryParam = new ApiList
-        //    {
-        //        { "issuance_agencies", "a" },
-        //    };
-        //    queryString = queryParam.ToQueryString();
-
-        //    runTest(++idx, queryString);
-
-
-        //    queryParam = new ApiList
-        //    {
-        //        { "last_updated_from", "2017-01-01" },
-        //        { "last_updated_to", "2018-01-01"}
-        //    };
-        //    queryString = queryParam.ToQueryString();
-
-        //    runTest(++idx, queryString);
-
-        //    queryParam = new ApiList
-        //    {
-        //        { "last_updated_from", "2018-01-01" }
-        //    };
-        //    queryString = queryParam.ToQueryString();
-
-        //    runTest(++idx, queryString);
-
-        //    queryParam = new ApiList
-        //    {
-        //        { "last_updated_to", "2018-01-01" }
-        //    };
-        //    queryString = queryParam.ToQueryString();
-
-        //    runTest(++idx, queryString);
-
-        //    queryParam = new ApiList
-        //    {
-        //        { "last_updated_from", "01-01-2017" },
-        //        { "last_updated_to", "2018-01-01"}
-        //    };
-        //    queryString = queryParam.ToQueryString();
-
-        //    runTest(++idx, queryString);
-
-        //    queryParam = new ApiList
-        //    {
-        //        { "last_updated_from", "012017-01-01" },
-        //        { "last_updated_to", "01-01-2018"}
-        //    };
-        //    queryString = queryParam.ToQueryString();
-
-        //    runTest(++idx, queryString);
-
-        //    queryParam = new ApiList
-        //    {
-        //        { "last_updated_from", "2018-01-01" },
-        //        { "last_updated_to", "2017-01-01"}
-        //    };
-        //    queryString = queryParam.ToQueryString();
-
-        //    runTest(++idx, queryString);
-
-        //    queryParam = new ApiList
-        //    {
-        //        { "name", "and" },
-        //        { "name_criteria", "contains"}
-        //    };
-        //    queryString = queryParam.ToQueryString();
-
-        //    runTest(++idx, queryString);
-
-        //    queryParam = new ApiList
-        //    {
-        //        { "name", "and" }
-        //    };
-        //    queryString = queryParam.ToQueryString();
-
-        //    runTest(++idx, queryString);
-        //}
-
+            
         private static void runTest(TestCase testCase)
         {
             //var testCaseId = $"DT{testCaseIndex.ToString().PadLeft(3, '0')}";
@@ -273,10 +151,29 @@ namespace HPB_EDH_UAT
             //TODO: change to 3 cases of GET by entities; by UEN and by UEN appointments.
             // base URL
             string baseUrl;
+            //static string apiPath = "test/l2-eg/v1"; //according to "EDH_BIDWH_HPB_UAT_REST_Scenarios_Conditions_v1.0.xlsx", tab "WebService"
+            //v1/entities
+            //v1/entity/{uen}
+            //v1/entity/{uen}/appointments
+            string fullPath;
+            switch (testCase.TestMethod)
+            {
+                case TestMethod.Entities:
+                    fullPath = $"{apiPath}/entities";
+                    break;
+                case TestMethod.UENs:
+                    fullPath = $"{apiPath}/entity/{testCase.UEN}";
+                    break;
+                case TestMethod.Appointments:
+                default:
+                    fullPath = $"{apiPath}/entity/{testCase.UEN}/appointments";
+                    break;
+            }
+
             if (string.IsNullOrEmpty(queryString))
-                baseUrl = $"https://{signingGateway}/{apiPath}";
+                baseUrl = $"https://{signingGateway}/{fullPath}";
             else
-                baseUrl = $"https://{signingGateway}/{apiPath}?{queryString}";
+                baseUrl = $"https://{signingGateway}/{fullPath}?{queryString}";
 
             // authorization header
             var authorizationHeader = ApiAuthorization.Token(realm, authPrefix, HttpMethod.GET, new Uri(baseUrl), appId, null, null, privateKey);
@@ -284,9 +181,9 @@ namespace HPB_EDH_UAT
             //target base URL
             string targetBaseUrl;
             if (string.IsNullOrEmpty(queryString))
-                targetBaseUrl = string.Format("https://{0}/{1}", targetGatewayName, apiPath);
+                targetBaseUrl = $"https://{targetGatewayName}/{fullPath}";
             else
-                targetBaseUrl = string.Format("https://{0}/{1}?{2}", targetGatewayName, apiPath, queryString);
+                targetBaseUrl = $"https://{targetGatewayName}/{fullPath}?{queryString}";
 
             var result = ApiAuthorization.HttpRequest(new Uri(targetBaseUrl), authorizationHeader);            
 
@@ -301,13 +198,6 @@ namespace HPB_EDH_UAT
 
             return localPath;
         }
-
-
-
-
-
-
-
         
     }
 }
