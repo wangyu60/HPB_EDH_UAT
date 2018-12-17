@@ -179,10 +179,10 @@ namespace HPB_EDH_UAT
             else
                 targetBaseUrl = $"https://{targetGatewayName}/{fullPath}?{queryString}";
 
-            var result = ApiAuthorization.HttpRequest(new Uri(targetBaseUrl), authorizationHeader);            
+            var result = ApiAuthorization.HttpRequest(new Uri(targetBaseUrl), authorizationHeader);                 
 
-            LoggerManager.Logger.LogInformation($"Test Case {testCase.Name} ended");
-            Console.WriteLine($"Test Case {testCase.Name} ended");
+            LoggerManager.Logger.LogInformation($"Test Case {testCase.Name} ended with result: {result}");
+            Console.WriteLine($"Test Case {testCase.Name} ended with result: {result}");
         }
        
 
